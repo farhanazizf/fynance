@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { formatIDR } from "../utils/currency";
-import { formatAddedBy, getEmailDisplay } from "../utils/userDisplay";
+import { formatAddedBy } from "../utils/userDisplay";
+import { format } from "date-fns";
 import { createDefaultCategories } from "../utils/defaultCategories";
 import { transactionService, categoryService } from "../lib/firestore";
 import { Transaction, Category } from "../types";
@@ -88,9 +89,12 @@ export const Dashboard: React.FC = () => {
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-        // Get all transactions
+        // Get all transactions and sort by latest first (newest to oldest)
         const allTxns = await transactionService.getAll(user.familyId);
-        setTransactions(allTxns);
+        const sortedTxns = [...allTxns].sort(
+          (a, b) => b.date.getTime() - a.date.getTime()
+        );
+        setTransactions(sortedTxns);
 
         // Calculate current balance
         const balance = allTxns.reduce((sum, txn) => {
@@ -140,13 +144,10 @@ export const Dashboard: React.FC = () => {
       type: txn.type,
       category: category?.name || "Other",
       amount: txn.type === "income" ? txn.amount : -txn.amount,
-      date: txn.date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
+      date: format(txn.date, "MMM d, h:mm a"),
       icon: category?.icon || (txn.type === "income" ? "💰" : "💸"),
       addedBy: formatAddedBy(txn.addedBy),
-      email: getEmailDisplay(txn.addedBy),
+      email: formatAddedBy(txn.addedBy),
     };
   });
 
@@ -271,7 +272,7 @@ export const Dashboard: React.FC = () => {
                       </p>
                       <span className="text-gray-300">•</span>
                       <p className="text-xs text-gray-400">
-                        by {transaction.email}
+                        by {transaction.addedBy}
                       </p>
                     </div>
                   </div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { formatIDR } from "../utils/currency";
-import { getEmailDisplay } from "../utils/userDisplay";
+import { formatAddedBy, getEmailDisplay } from "../utils/userDisplay";
+import { format } from "date-fns";
 import { transactionService, categoryService } from "../lib/firestore";
 import { Transaction, Category } from "../types";
 import { Input, Select, DatePicker, Empty, Button } from "antd";
@@ -47,9 +48,14 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
           categoryService.getAll(user.familyId),
         ]);
 
-        setTransactions(allTransactions);
+        // Sort transactions by date (most recent first)
+        const sortedTransactions = [...allTransactions].sort(
+          (a, b) => b.date.getTime() - a.date.getTime()
+        );
+
+        setTransactions(sortedTransactions);
         setCategories(allCategories);
-        setFilteredTransactions(allTransactions);
+        setFilteredTransactions(sortedTransactions);
       } catch (error) {
         console.error("Error loading transaction history:", error);
       } finally {
@@ -71,9 +77,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
         return (
           category?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           txn.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          getEmailDisplay(txn.addedBy)
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
+          (txn.addedBy || "").toLowerCase().includes(searchTerm.toLowerCase())
         );
       });
     }
@@ -112,11 +116,18 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
   // Get transaction with category info
   const getTransactionWithCategory = (txn: Transaction) => {
     const category = categories.find((cat) => cat.id === txn.categoryId);
+
+    // Format the email display for better mobile appearance
+    const formatEmail = (email?: string) => {
+      if (!email) return "[Unknown]";
+      return getEmailDisplay(email);
+    };
+
     return {
       ...txn,
       categoryName: category?.name || "Other",
       categoryIcon: category?.icon || (txn.type === "income" ? "💰" : "💸"),
-      email: getEmailDisplay(txn.addedBy),
+      email: formatEmail(txn.addedBy),
     };
   };
 
@@ -308,14 +319,11 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                             </p>
                             <div className="flex items-center space-x-2">
                               <p className="text-sm text-gray-500">
-                                {transaction.date.toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
+                                {format(transaction.date, "h:mm a")}
                               </p>
                               <span className="text-gray-300">•</span>
                               <p className="text-xs text-gray-400">
-                                by {transaction.email}
+                                by {formatAddedBy(transaction.addedBy)}
                               </p>
                             </div>
                             {transaction.description && (

@@ -27,6 +27,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ onBack }) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [categorySearch, setCategorySearch] = useState("");
+  const [time, setTime] = useState(dayjs().format("HH:mm"));
 
   // Load categories on component mount
   useEffect(() => {
@@ -101,12 +102,15 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ onBack }) => {
 
     setLoading(true);
     try {
+      // Combine date and time for accurate datetime
+      const datetime = dayjs(`${date} ${time}`);
+
       const transaction: Omit<Transaction, "id" | "createdAt" | "familyId"> = {
         amount: parseFloat(amount),
         type: transactionType,
         categoryId: selectedCategory,
         description: description,
-        date: dayjs(date).toDate(),
+        date: datetime.toDate(),
         addedBy: user.email || user.uid, // Use email if available, fallback to UID
       };
 
@@ -118,6 +122,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ onBack }) => {
       setSelectedCategory("");
       setDescription("");
       setDate(dayjs().format("YYYY-MM-DD"));
+      setTime(dayjs().format("HH:mm"));
       setCategorySearch("");
 
       onBack(); // Go back to dashboard
@@ -438,17 +443,33 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ onBack }) => {
             />
           </div>
 
-          {/* Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Date
-            </label>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
-            />
+          {/* Date and Time */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Date
+              </label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Time
+              </label>
+              <input
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Adding the correct time helps sort transactions properly
+              </p>
+            </div>
           </div>
         </div>
 
