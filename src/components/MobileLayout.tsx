@@ -114,11 +114,61 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
 
       {/* Desktop Sidebar - Hidden on mobile */}
       <div className="hidden lg:block lg:space-y-4">
+        {/* User Profile Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-sm">
+                {(
+                  user?.displayName?.charAt(0) ||
+                  user?.email?.charAt(0) ||
+                  "U"
+                ).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-gray-800">
+                {user?.displayName || user?.email?.split("@")[0] || "User"}
+              </p>
+              <p className="text-xs text-gray-500">{user?.email}</p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <button
+              onClick={handleSettingsClick}
+              className="w-full flex items-center p-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+            >
+              <SettingOutlined className="w-4 h-4 mr-3" />
+              Settings
+            </button>
+
+            <button
+              onClick={handleLogoutClick}
+              className="w-full flex items-center p-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <LogoutOutlined className="w-4 h-4 mr-3" />
+              Logout
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
         <div className="bg-white p-6 rounded-xl shadow-sm">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Quick Actions
           </h3>
           <div className="space-y-3">
+            {/* Add Transaction Button */}
+            <button
+              onClick={() => onPageChange("add")}
+              className="w-full flex items-center p-3 rounded-lg transition-all bg-blue-500 text-white hover:bg-blue-600 shadow-md"
+            >
+              <PlusOutlined className="w-5 h-5 mr-3" />
+              <span className="font-medium">Add Transaction</span>
+            </button>
+
+            {/* Regular Navigation Items */}
             {navItems
               .filter((item) => !item.isFloating)
               .map((item) => {

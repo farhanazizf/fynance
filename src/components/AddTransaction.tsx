@@ -134,7 +134,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ onBack }) => {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between max-w-2xl mx-auto">
           <div className="flex items-center">
             <button
               onClick={onBack}
@@ -155,337 +155,343 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ onBack }) => {
         </div>
       </div>
 
-      <div className="px-6 py-6 space-y-6">
-        {/* Transaction Type Toggle */}
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setTransactionType("expense")}
-            className={`flex-1 py-3 px-4 rounded-full text-sm font-medium transition-all ${
-              transactionType === "expense"
-                ? "bg-teal-500 text-white shadow-md"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            Expense
-          </button>
-          <button
-            onClick={() => setTransactionType("income")}
-            className={`flex-1 py-3 px-4 rounded-full text-sm font-medium transition-all ${
-              transactionType === "income"
-                ? "bg-teal-500 text-white shadow-md"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            Income
-          </button>
-        </div>
-
-        {/* Amount Input */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Amount
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              inputMode="numeric"
-              value={displayAmount}
-              onChange={(e) => handleAmountChange(e.target.value)}
-              placeholder="0"
-              className={`w-full p-4 pl-12 text-2xl font-semibold bg-gray-50 border-0 rounded-xl focus:ring-2 focus:outline-none transition-all ${
-                amount
-                  ? "text-gray-800 focus:ring-teal-500"
-                  : "text-gray-400 focus:ring-teal-500"
+      <div className="px-6 py-6 max-w-2xl mx-auto">
+        <div className="space-y-6">
+          {/* Transaction Type Toggle */}
+          <div className="flex space-x-2 max-w-md mx-auto lg:max-w-full">
+            <button
+              onClick={() => setTransactionType("expense")}
+              className={`flex-1 py-3 px-4 rounded-full text-sm font-medium transition-all ${
+                transactionType === "expense"
+                  ? "bg-teal-500 text-white shadow-md"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
-            />
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-semibold text-teal-600 pointer-events-none">
-              {IDR_SYMBOL}
-            </div>
+            >
+              Expense
+            </button>
+            <button
+              onClick={() => setTransactionType("income")}
+              className={`flex-1 py-3 px-4 rounded-full text-sm font-medium transition-all ${
+                transactionType === "income"
+                  ? "bg-teal-500 text-white shadow-md"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Income
+            </button>
           </div>
 
-          {/* Quick Amount Buttons */}
-          <div className="mt-3 flex flex-wrap gap-2">
-            {[10000, 25000, 50000, 100000, 250000, 500000].map(
-              (quickAmount) => (
-                <button
-                  key={quickAmount}
-                  type="button"
-                  onClick={() => handleAmountChange(quickAmount.toString())}
-                  className="px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-full hover:bg-teal-100 hover:text-teal-700 transition-colors"
-                >
-                  {formatNumber(quickAmount)}
-                </button>
-              )
+          {/* Amount Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Amount
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={displayAmount}
+                onChange={(e) => handleAmountChange(e.target.value)}
+                placeholder="0"
+                className={`w-full p-4 pl-12 text-2xl font-semibold bg-gray-50 border-0 rounded-xl focus:ring-2 focus:outline-none transition-all ${
+                  amount
+                    ? "text-gray-800 focus:ring-teal-500"
+                    : "text-gray-400 focus:ring-teal-500"
+                }`}
+              />
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-semibold text-teal-600 pointer-events-none">
+                {IDR_SYMBOL}
+              </div>
+            </div>
+
+            {/* Quick Amount Buttons */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[10000, 25000, 50000, 100000, 250000, 500000].map(
+                (quickAmount) => (
+                  <button
+                    key={quickAmount}
+                    type="button"
+                    onClick={() => handleAmountChange(quickAmount.toString())}
+                    className="px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-full hover:bg-teal-100 hover:text-teal-700 transition-colors"
+                  >
+                    {formatNumber(quickAmount)}
+                  </button>
+                )
+              )}
+            </div>
+
+            {amount && (
+              <div className="mt-2 flex items-center justify-between">
+                <div className="text-sm text-gray-500">
+                  Amount: {formatIDR(parseFloat(amount))}
+                </div>
+                {parseFloat(amount) >= 1_000_000 && (
+                  <div className="text-xs text-teal-600 bg-teal-50 px-2 py-1 rounded-full">
+                    {parseFloat(amount) >= 1_000_000_000
+                      ? `${(parseFloat(amount) / 1_000_000_000).toFixed(1)}B`
+                      : `${(parseFloat(amount) / 1_000_000).toFixed(1)}M`}
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
-          {amount && (
-            <div className="mt-2 flex items-center justify-between">
-              <div className="text-sm text-gray-500">
-                Amount: {formatIDR(parseFloat(amount))}
+          {/* Category Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category
+            </label>
+
+            {/* Category Search */}
+            {filteredCategories.length > 6 && (
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                  placeholder="Search categories..."
+                  className="w-full p-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
+                />
               </div>
-              {parseFloat(amount) >= 1_000_000 && (
-                <div className="text-xs text-teal-600 bg-teal-50 px-2 py-1 rounded-full">
-                  {parseFloat(amount) >= 1_000_000_000
-                    ? `${(parseFloat(amount) / 1_000_000_000).toFixed(1)}B`
-                    : `${(parseFloat(amount) / 1_000_000).toFixed(1)}M`}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Category Selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Category
-          </label>
-
-          {/* Category Search */}
-          {filteredCategories.length > 6 && (
-            <div className="mb-4">
-              <input
-                type="text"
-                value={categorySearch}
-                onChange={(e) => setCategorySearch(e.target.value)}
-                placeholder="Search categories..."
-                className="w-full p-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
-              />
-            </div>
-          )}
-
-          {/* Selected Category Display */}
-          {selectedCategory && (
-            <div className="mb-4 p-3 bg-teal-50 rounded-xl border border-teal-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  {filteredCategories.find(
-                    (cat) => cat.id === selectedCategory
-                  ) && (
-                    <>
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm bg-white shadow-sm">
-                        <span>
+            {/* Selected Category Display */}
+            {selectedCategory && (
+              <div className="mb-4 p-3 bg-teal-50 rounded-xl border border-teal-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    {filteredCategories.find(
+                      (cat) => cat.id === selectedCategory
+                    ) && (
+                      <>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm bg-white shadow-sm">
+                          <span>
+                            {
+                              filteredCategories.find(
+                                (cat) => cat.id === selectedCategory
+                              )?.icon
+                            }
+                          </span>
+                        </div>
+                        <span className="text-sm font-medium text-teal-700">
                           {
                             filteredCategories.find(
                               (cat) => cat.id === selectedCategory
-                            )?.icon
+                            )?.name
                           }
                         </span>
-                      </div>
-                      <span className="text-sm font-medium text-teal-700">
-                        {
-                          filteredCategories.find(
-                            (cat) => cat.id === selectedCategory
-                          )?.name
-                        }
-                      </span>
-                    </>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory("")}
-                  className="text-teal-600 hover:text-teal-700 text-sm"
-                >
-                  Change
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Category Grid */}
-          {!selectedCategory && (
-            <>
-              {/* Quick Categories for common expenses */}
-              {transactionType === "expense" && categorySearch === "" && (
-                <div className="mb-4">
-                  <h4 className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">
-                    Most Common
-                  </h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {filteredCategories
-                      .filter((cat) =>
-                        [
-                          "Makanan & Minuman",
-                          "Kopi & Jajan",
-                          "Ojek Online",
-                          "Belanja Groceries",
-                          "Bensin & Parkir",
-                          "Internet & Pulsa",
-                        ].includes(cat.name)
-                      )
-                      .slice(0, 6)
-                      .map((category) => (
-                        <button
-                          key={category.id}
-                          type="button"
-                          onClick={() => setSelectedCategory(category.id)}
-                          className="p-3 rounded-lg border-2 border-gray-200 bg-gray-50 hover:border-teal-300 hover:bg-teal-50 transition-all duration-200 hover:scale-105 active:scale-95"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <div
-                              className="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm"
-                              style={{
-                                backgroundColor: category.color + "20",
-                              }}
-                            >
-                              <span>{category.icon}</span>
-                            </div>
-                            <div className="flex-1 text-left">
-                              <div className="text-xs font-medium text-gray-700">
-                                {category.name}
-                              </div>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
+                      </>
+                    )}
                   </div>
-                </div>
-              )}
-
-              {/* All Categories */}
-              <div>
-                {transactionType === "expense" && categorySearch === "" && (
-                  <h4 className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">
-                    All Categories
-                  </h4>
-                )}
-                <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto">
-                  {filteredCategories.map((category) => (
-                    <button
-                      key={category.id}
-                      type="button"
-                      onClick={() => setSelectedCategory(category.id)}
-                      className="p-4 rounded-xl border-2 border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100 transition-all duration-200 hover:scale-105 active:scale-95"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-lg shadow-sm"
-                          style={{
-                            backgroundColor: category.color + "20",
-                          }}
-                        >
-                          <span>{category.icon}</span>
-                        </div>
-                        <div className="flex-1 text-left">
-                          <div className="text-sm font-medium text-gray-700">
-                            {category.name}
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* No categories message */}
-          {filteredCategories.length === 0 && (
-            <div className="space-y-4">
-              {categorySearch ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p className="text-sm">
-                    No categories found for "{categorySearch}"
-                  </p>
                   <button
                     type="button"
-                    onClick={() => setCategorySearch("")}
-                    className="text-xs mt-1 text-teal-600 hover:text-teal-700"
+                    onClick={() => setSelectedCategory("")}
+                    className="text-teal-600 hover:text-teal-700 text-sm"
                   >
-                    Clear search
+                    Change
                   </button>
                 </div>
-              ) : categories.length === 0 ? (
-                <CreateDefaultCategories
-                  onSuccess={() => {
-                    // Reload categories after creation
-                    if (user?.familyId) {
-                      categoryService.getAll(user.familyId).then(setCategories);
-                    }
-                  }}
-                />
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <p className="text-sm">
-                    No categories available for {transactionType}
-                  </p>
-                  <p className="text-xs mt-1">
-                    Switch to{" "}
-                    {transactionType === "expense" ? "income" : "expense"} or
-                    create new categories
-                  </p>
+              </div>
+            )}
+
+            {/* Category Grid */}
+            {!selectedCategory && (
+              <>
+                {/* Quick Categories for common expenses */}
+                {transactionType === "expense" && categorySearch === "" && (
+                  <div className="mb-4">
+                    <h4 className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">
+                      Most Common
+                    </h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      {filteredCategories
+                        .filter((cat) =>
+                          [
+                            "Makanan & Minuman",
+                            "Kopi & Jajan",
+                            "Ojek Online",
+                            "Belanja Groceries",
+                            "Bensin & Parkir",
+                            "Internet & Pulsa",
+                          ].includes(cat.name)
+                        )
+                        .slice(0, 6)
+                        .map((category) => (
+                          <button
+                            key={category.id}
+                            type="button"
+                            onClick={() => setSelectedCategory(category.id)}
+                            className="p-3 rounded-lg border-2 border-gray-200 bg-gray-50 hover:border-teal-300 hover:bg-teal-50 transition-all duration-200 hover:scale-105 active:scale-95"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <div
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm"
+                                style={{
+                                  backgroundColor: category.color + "20",
+                                }}
+                              >
+                                <span>{category.icon}</span>
+                              </div>
+                              <div className="flex-1 text-left">
+                                <div className="text-xs font-medium text-gray-700">
+                                  {category.name}
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* All Categories */}
+                <div>
+                  {transactionType === "expense" && categorySearch === "" && (
+                    <h4 className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">
+                      All Categories
+                    </h4>
+                  )}
+                  <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto">
+                    {filteredCategories.map((category) => (
+                      <button
+                        key={category.id}
+                        type="button"
+                        onClick={() => setSelectedCategory(category.id)}
+                        className="p-4 rounded-xl border-2 border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100 transition-all duration-200 hover:scale-105 active:scale-95"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-lg shadow-sm"
+                            style={{
+                              backgroundColor: category.color + "20",
+                            }}
+                          >
+                            <span>{category.icon}</span>
+                          </div>
+                          <div className="flex-1 text-left">
+                            <div className="text-sm font-medium text-gray-700">
+                              {category.name}
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+              </>
+            )}
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Description <span className="text-gray-400">(optional)</span>
-          </label>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Grocery shopping"
-            className="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
-          />
-        </div>
-
-        {/* Date */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Date
-          </label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
-          />
-        </div>
-      </div>
-
-      {/* Save Button - Fixed at bottom */}
-      <div className="fixed bottom-20 left-0 right-0 p-6 bg-white border-t border-gray-100">
-        {/* Validation feedback */}
-        {(!amount || !selectedCategory) && (
-          <div className="mb-3 text-center">
-            <p className="text-sm text-gray-500">
-              {!amount && !selectedCategory
-                ? "Enter amount and select category"
-                : !amount
-                ? "Enter amount to continue"
-                : "Select a category to continue"}
-            </p>
+            {/* No categories message */}
+            {filteredCategories.length === 0 && (
+              <div className="space-y-4">
+                {categorySearch ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <p className="text-sm">
+                      No categories found for "{categorySearch}"
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setCategorySearch("")}
+                      className="text-xs mt-1 text-teal-600 hover:text-teal-700"
+                    >
+                      Clear search
+                    </button>
+                  </div>
+                ) : categories.length === 0 ? (
+                  <CreateDefaultCategories
+                    onSuccess={() => {
+                      // Reload categories after creation
+                      if (user?.familyId) {
+                        categoryService
+                          .getAll(user.familyId)
+                          .then(setCategories);
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p className="text-sm">
+                      No categories available for {transactionType}
+                    </p>
+                    <p className="text-xs mt-1">
+                      Switch to{" "}
+                      {transactionType === "expense" ? "income" : "expense"} or
+                      create new categories
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        )}
 
-        <button
-          onClick={handleSave}
-          disabled={!isFormValid || loading}
-          className={`w-full py-4 rounded-xl font-semibold text-white transition-all ${
-            isFormValid && !loading
-              ? "bg-gray-800 hover:bg-gray-900 active:scale-95 shadow-lg"
-              : "bg-gray-300 cursor-not-allowed"
-          }`}
-        >
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              Saving...
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Description <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Grocery shopping"
+              className="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
+            />
+          </div>
+
+          {/* Date */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Date
+            </label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-800"
+            />
+          </div>
+        </div>
+
+        {/* Save Button - Responsive positioning */}
+        <div className="sticky bottom-0 lg:relative lg:bottom-auto lg:mt-8 p-6 bg-white border-t border-gray-100 lg:border-t-0">
+          {/* Validation feedback */}
+          {(!amount || !selectedCategory) && (
+            <div className="mb-3 text-center">
+              <p className="text-sm text-gray-500">
+                {!amount && !selectedCategory
+                  ? "Enter amount and select category"
+                  : !amount
+                  ? "Enter amount to continue"
+                  : "Select a category to continue"}
+              </p>
             </div>
-          ) : (
-            `Save ${transactionType === "expense" ? "Expense" : "Income"}`
           )}
-        </button>
-      </div>
 
-      {/* Add bottom padding to account for fixed button and bottom nav */}
-      <div className="h-40"></div>
+          <div className="max-w-md mx-auto lg:max-w-sm">
+            <button
+              onClick={handleSave}
+              disabled={!isFormValid || loading}
+              className={`w-full py-4 rounded-xl font-semibold text-white transition-all ${
+                isFormValid && !loading
+                  ? "bg-gray-800 hover:bg-gray-900 active:scale-95 shadow-lg"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Saving...
+                </div>
+              ) : (
+                `Save ${transactionType === "expense" ? "Expense" : "Income"}`
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Add bottom padding for mobile only */}
+        <div className="h-40 lg:h-0"></div>
+      </div>
     </div>
   );
 };
