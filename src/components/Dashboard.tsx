@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { formatIDR } from "../utils/currency";
+import { formatAddedBy } from "../utils/userDisplay";
 import { createDefaultCategories } from "../utils/defaultCategories";
 import { transactionService, categoryService } from "../lib/firestore";
 import { Transaction, Category } from "../types";
@@ -48,11 +49,9 @@ export const Dashboard: React.FC = () => {
   };
 
   // Check for duplicates
-  const checkForDuplicates = async () => {
-    if (!user?.familyId) return;
-
+  const checkForDuplicates = async (familyId: string) => {
     try {
-      const summary = await getCategorySummary(user.familyId);
+      const summary = await getCategorySummary(familyId);
       setShowCleanupButton(summary.duplicates > 0);
     } catch (error) {
       console.error("Error checking for duplicates:", error);
@@ -114,7 +113,7 @@ export const Dashboard: React.FC = () => {
         }));
 
         // Check for any remaining duplicates
-        await checkForDuplicates();
+        await checkForDuplicates(user.familyId);
       } catch (error) {
         console.error("Error loading data:", error);
         message.error(
@@ -146,6 +145,7 @@ export const Dashboard: React.FC = () => {
         day: "numeric",
       }),
       icon: category?.icon || (txn.type === "income" ? "💰" : "💸"),
+      addedBy: formatAddedBy(txn.addedBy),
     };
   });
 
@@ -253,7 +253,15 @@ export const Dashboard: React.FC = () => {
                     <p className="font-semibold text-gray-900 text-base">
                       {transaction.category}
                     </p>
-                    <p className="text-sm text-gray-500">{transaction.date}</p>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-sm text-gray-500">
+                        {transaction.date}
+                      </p>
+                      <span className="text-gray-300">•</span>
+                      <p className="text-xs text-gray-400">
+                        by {transaction.addedBy}
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <span

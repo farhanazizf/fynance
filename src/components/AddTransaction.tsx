@@ -107,7 +107,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ onBack }) => {
         categoryId: selectedCategory,
         description: description,
         date: dayjs(date).toDate(),
-        addedBy: user.uid,
+        addedBy: user.email || user.uid, // Use email if available, fallback to UID
       };
 
       await transactionService.create(user.familyId, transaction);

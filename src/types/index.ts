@@ -34,7 +34,7 @@ export interface Transaction {
   date: Date;
   createdAt: Date;
   familyId: string; // Changed from userId to familyId for sharing
-  addedBy?: string; // Track which family member added the transaction
+  addedBy?: string; // Email or UID of the family member who added the transaction
 }
 
 export interface ChartData {
