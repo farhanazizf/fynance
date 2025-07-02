@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   HomeOutlined,
   BarChartOutlined,
@@ -22,6 +22,16 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
 }) => {
   const { logout, user } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+
+  console.log("MobileLayout: currentPage =", currentPage);
+
+  const handlePageChange = useCallback(
+    (page: string) => {
+      console.log("MobileLayout: handlePageChange called with:", page);
+      onPageChange(page);
+    },
+    [onPageChange]
+  );
 
   const navItems = [
     {
@@ -188,7 +198,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
           <div className="space-y-3">
             {/* Add Transaction Button */}
             <button
-              onClick={() => onPageChange("add")}
+              onClick={() => handlePageChange("add")}
               className="w-full flex items-center p-3 rounded-lg transition-all bg-blue-500 text-white hover:bg-blue-600 shadow-md"
             >
               <PlusOutlined className="w-5 h-5 mr-3" />
@@ -204,7 +214,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
                 return (
                   <button
                     key={item.key}
-                    onClick={() => onPageChange(item.key)}
+                    onClick={() => handlePageChange(item.key)}
                     className={`w-full flex items-center p-3 rounded-lg transition-all ${
                       isActive
                         ? "bg-teal-500 text-white shadow-md"
@@ -221,25 +231,28 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 pb-2 pt-3 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-2 pb-4 pt-4 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <div className="flex items-center justify-around max-w-md mx-auto relative">
           {/* Add transaction floating button */}
-          <div className="absolute left-0 right-0 flex justify-center -top-8 z-10">
-            <button
-              onClick={() => onPageChange("add")}
-              className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center shadow-lg transition-all active:scale-95 hover:bg-blue-600"
-              aria-label="Add transaction"
-            >
-              <PlusOutlined className="text-2xl text-white" />
-            </button>
+          <div className="absolute left-1/2 transform -translate-x-1/2 -top-8 z-10 pointer-events-none">
+            {/* Larger touch target wrapper */}
+            <div className="w-20 h-20 flex items-center justify-center pointer-events-auto">
+              <button
+                onClick={() => handlePageChange("add")}
+                className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 active:scale-90 hover:bg-blue-600 hover:shadow-xl"
+                aria-label="Add transaction"
+              >
+                <PlusOutlined className="text-2xl text-white" />
+              </button>
+            </div>
           </div>
 
           {/* Regular navigation items */}
-          <div className="flex items-center justify-between w-full px-4">
+          <div className="flex items-center justify-between w-full">
             {/* Home Button */}
             <button
-              onClick={() => onPageChange("home")}
-              className={`flex flex-col items-center py-1 px-6 transition-colors ${
+              onClick={() => handlePageChange("home")}
+              className={`flex flex-col items-center py-3 px-8 transition-all duration-200 min-h-[60px] flex-1 active:scale-95 active:bg-blue-50 rounded-lg ${
                 currentPage === "home" ? "text-blue-600" : "text-gray-400"
               }`}
               aria-label="Home"
@@ -259,12 +272,12 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
             </button>
 
             {/* Empty space for plus button */}
-            <div className="w-16"></div>
+            <div className="w-16 flex-shrink-0"></div>
 
             {/* Reports Button */}
             <button
-              onClick={() => onPageChange("reports")}
-              className={`flex flex-col items-center py-1 px-6 transition-colors ${
+              onClick={() => handlePageChange("reports")}
+              className={`flex flex-col items-center py-3 px-8 transition-all duration-200 min-h-[60px] flex-1 active:scale-95 active:bg-blue-50 rounded-lg ${
                 currentPage === "reports" ? "text-blue-600" : "text-gray-400"
               }`}
               aria-label="Reports"
@@ -287,7 +300,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
       </div>
 
       {/* Add bottom padding for mobile navigation */}
-      <div className="lg:hidden h-24"></div>
+      <div className="lg:hidden h-28"></div>
     </div>
   );
 };
