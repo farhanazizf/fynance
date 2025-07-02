@@ -31,6 +31,11 @@ const Categories = lazy(() =>
     default: module.Categories,
   }))
 );
+const TransactionHistory = lazy(() =>
+  import("./components/TransactionHistory").then((module) => ({
+    default: module.TransactionHistory,
+  }))
+);
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<
@@ -429,6 +434,9 @@ const preloadComponent = (componentName: string) => {
     case "settings":
       import("./components/Categories");
       break;
+    case "history":
+      import("./components/TransactionHistory");
+      break;
     case "login":
       import("./components/Login");
       break;
@@ -529,7 +537,28 @@ const AppContent: React.FC = () => {
       preloadComponent("reports");
     } else if (page === "add") {
       preloadComponent("settings");
+    } else if (page === "history") {
+      preloadComponent("home");
     }
+  };
+
+  // Listen for custom navigation events
+  useEffect(() => {
+    const handleNavigateToHistory = () => {
+      setCurrentPage("history");
+    };
+
+    window.addEventListener("navigate-to-history", handleNavigateToHistory);
+    return () => {
+      window.removeEventListener(
+        "navigate-to-history",
+        handleNavigateToHistory
+      );
+    };
+  }, []);
+
+  const handleBackFromHistory = () => {
+    handlePageChange("home");
   };
 
   if (loading) {
@@ -571,6 +600,8 @@ const AppContent: React.FC = () => {
           return "Reports";
         case "settings":
           return "Categories";
+        case "history":
+          return "Transaction History";
         default:
           return "Dashboard";
       }
@@ -588,6 +619,13 @@ const AppContent: React.FC = () => {
                 <AddTransaction
                   key="add-transaction"
                   onBack={() => handlePageChange("home")}
+                />
+              );
+            case "history":
+              return (
+                <TransactionHistory
+                  key="transaction-history"
+                  onBack={handleBackFromHistory}
                 />
               );
             case "reports":

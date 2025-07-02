@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { formatIDR } from "../utils/currency";
-import { formatAddedBy } from "../utils/userDisplay";
+import { formatAddedBy, getEmailDisplay } from "../utils/userDisplay";
 import { createDefaultCategories } from "../utils/defaultCategories";
 import { transactionService, categoryService } from "../lib/firestore";
 import { Transaction, Category } from "../types";
@@ -146,6 +146,7 @@ export const Dashboard: React.FC = () => {
       }),
       icon: category?.icon || (txn.type === "income" ? "💰" : "💸"),
       addedBy: formatAddedBy(txn.addedBy),
+      email: getEmailDisplay(txn.addedBy),
     };
   });
 
@@ -236,9 +237,20 @@ export const Dashboard: React.FC = () => {
 
         {/* Recent Transactions */}
         <div className="pb-24">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">
-            Recent Transactions
-          </h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900">
+              Recent Transactions
+            </h3>
+            <Button
+              type="link"
+              className="text-blue-500 font-medium p-0 h-auto"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("navigate-to-history"))
+              }
+            >
+              View All
+            </Button>
+          </div>
           <div className="space-y-4">
             {recentTransactions.map((transaction) => (
               <div
@@ -259,7 +271,7 @@ export const Dashboard: React.FC = () => {
                       </p>
                       <span className="text-gray-300">•</span>
                       <p className="text-xs text-gray-400">
-                        by {transaction.addedBy}
+                        by {transaction.email}
                       </p>
                     </div>
                   </div>

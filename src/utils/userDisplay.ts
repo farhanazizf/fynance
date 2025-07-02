@@ -30,6 +30,23 @@ export const formatAddedBy = (addedBy?: string): string => {
 };
 
 /**
+ * Get the email address for display
+ * @param addedBy - Email, UID, or display name
+ * @returns Email address or formatted fallback
+ */
+export const getEmailDisplay = (addedBy?: string): string => {
+  if (!addedBy) return "Unknown";
+
+  // If it looks like an email, return it as is
+  if (addedBy.includes("@")) {
+    return addedBy;
+  }
+
+  // If it's a UID or other string, return a formatted version
+  return formatAddedBy(addedBy);
+};
+
+/**
  * Get user initials from email or name
  * @param addedBy - Email, UID, or display name
  * @returns User initials (max 2 characters)
