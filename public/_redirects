@@ -1,0 +1,13 @@
+# PWA Redirects for Netlify
+# This file ensures proper PWA functionality
+
+# Handle service worker
+/service-worker.js /service-worker.js 200
+/sw.js /sw.js 200
+
+# Handle PWA manifest
+/manifest.json /manifest.json 200
+/site.webmanifest /site.webmanifest 200
+
+# Handle all routes for SPA
+/* /index.html 200
