@@ -230,7 +230,7 @@ export const Dashboard: React.FC = () => {
             <span className="text-white/90 font-medium">
               {formatIDR(monthlyBudget.used)} / {formatIDR(monthlyBudget.total)}
             </span>
-            <span className="text-xl font-bold">%{budgetPercentage}</span>
+            <span className="text-xl font-bold">{budgetPercentage}%</span>
           </div>
         </div>
 

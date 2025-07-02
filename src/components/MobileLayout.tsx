@@ -3,6 +3,7 @@ import {
   HomeOutlined,
   BarChartOutlined,
   PlusOutlined,
+  AppstoreOutlined,
   SettingOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
@@ -41,9 +42,16 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
     },
   ];
 
-  const handleSettingsClick = () => {
+  const handleCategoriesClick = () => {
     setShowUserMenu(false);
     onPageChange("settings");
+  };
+
+  const handleBudgetClick = () => {
+    setShowUserMenu(false);
+    // For now, we can show a message or navigate to home
+    // Later this can be expanded to a budget settings page
+    alert("Budget settings coming soon!");
   };
 
   const handleLogoutClick = () => {
@@ -90,12 +98,22 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
                 </div>
 
                 <button
-                  onClick={handleSettingsClick}
+                  onClick={handleCategoriesClick}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                >
+                  <AppstoreOutlined className="w-4 h-4 mr-3" />
+                  Categories
+                </button>
+
+                <button
+                  onClick={handleBudgetClick}
                   className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                 >
                   <SettingOutlined className="w-4 h-4 mr-3" />
-                  Settings
+                  Budget Settings
                 </button>
+
+                <div className="border-t border-gray-100 my-1"></div>
 
                 <button
                   onClick={handleLogoutClick}
@@ -132,16 +150,25 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({
               </p>
               <p className="text-xs text-gray-500">{user?.email}</p>
             </div>
-          </div>
-
+          </div>{" "}
           <div className="space-y-2">
             <button
-              onClick={handleSettingsClick}
+              onClick={handleCategoriesClick}
+              className="w-full flex items-center p-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+            >
+              <AppstoreOutlined className="w-4 h-4 mr-3" />
+              Categories
+            </button>
+
+            <button
+              onClick={handleBudgetClick}
               className="w-full flex items-center p-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
             >
               <SettingOutlined className="w-4 h-4 mr-3" />
-              Settings
+              Budget Settings
             </button>
+
+            <div className="border-t border-gray-200 my-2"></div>
 
             <button
               onClick={handleLogoutClick}

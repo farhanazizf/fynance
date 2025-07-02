@@ -61,4 +61,61 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Enable code splitting optimizations
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks
+          "react-vendor": ["react", "react-dom"],
+          "firebase-vendor": [
+            "firebase/app",
+            "firebase/auth",
+            "firebase/firestore",
+          ],
+          "antd-vendor": ["antd", "@ant-design/icons"],
+          "chart-vendor": ["chart.js", "react-chartjs-2"],
+          "utility-vendor": ["dayjs", "date-fns"],
+
+          // App chunks
+          "auth-components": [
+            "./src/components/Login.tsx",
+            "./src/components/FamilySetup.tsx",
+            "./src/contexts/AuthContext.tsx",
+          ],
+          "main-components": [
+            "./src/components/Dashboard.tsx",
+            "./src/components/MobileLayout.tsx",
+          ],
+          "feature-components": [
+            "./src/components/AddTransaction.tsx",
+            "./src/components/Reports.tsx",
+            "./src/components/Categories.tsx",
+          ],
+        },
+        // Use content hash for long-term caching
+        chunkFileNames: "assets/[name].[hash].js",
+        entryFileNames: "assets/[name].[hash].js",
+        assetFileNames: "assets/[name].[hash].[ext]",
+      },
+    },
+    // Chunk size warnings
+    chunkSizeWarningLimit: 1000,
+    // Target modern browsers for better optimization
+    target: "esnext",
+    // Minification
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+  },
+  // Enable gzip compression in preview
+  preview: {
+    headers: {
+      "Cache-Control": "public, max-age=31536000",
+    },
+  },
 });
