@@ -7,10 +7,12 @@ import { AddTransaction } from "./components/AddTransaction";
 import { Reports } from "./components/Reports";
 import { Categories } from "./components/Categories";
 import { MobileLayout } from "./components/MobileLayout";
+import { FamilySetup } from "./components/FamilySetup";
 
 // App content component that uses auth context
 const AppContent: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, needsFamilySetup, setupFamily, firebaseUser } =
+    useAuth();
   const [currentPage, setCurrentPage] = useState("home");
 
   if (loading) {
@@ -25,6 +27,15 @@ const AppContent: React.FC = () => {
   }
 
   if (!user) {
+    // Check if user is authenticated but needs family setup
+    if (firebaseUser && needsFamilySetup) {
+      return (
+        <FamilySetup
+          onFamilySetup={setupFamily}
+          userEmail={firebaseUser.email || ""}
+        />
+      );
+    }
     return <Login />;
   }
 
@@ -36,7 +47,7 @@ const AppContent: React.FC = () => {
         return <AddTransaction onBack={() => setCurrentPage("home")} />;
       case "reports":
         return <Reports onBack={() => setCurrentPage("home")} />;
-      case "categories":
+      case "settings":
         return <Categories onBack={() => setCurrentPage("home")} />;
       default:
         return <Dashboard />;
